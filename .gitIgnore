@@ -1,0 +1,18 @@
+# Node modules
+node_modules/
+
+# Logs
+*.log
+logs/
+
+
+# dotenv environment variables file
+.env
+
+# Editor-specific files
+# VSCode
+.vscode/
+
+# Sublime Text
+*.sublime-workspace
+*.sublime-project
