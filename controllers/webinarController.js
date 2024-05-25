@@ -1,5 +1,6 @@
 const Webinar = require("../models/webinarModel");
 
+// fungsi mendapat semua webinar
 exports.getAllWebinar = async (req, res) => {
   try {
     const webinars = await Webinar.find();
@@ -9,6 +10,7 @@ exports.getAllWebinar = async (req, res) => {
   }
 };
 
+// fungsi mendapat webinar sesuai id
 exports.getWebinarById = async (req, res) => {
   try {
     const webinar = await Webinar.findById(req.params.id);
@@ -19,6 +21,7 @@ exports.getWebinarById = async (req, res) => {
   }
 };
 
+// fungsi menambah webinar oleh admin
 exports.addWebinar = async (req, res) => {
   try {
     const webinar = new Webinar(req.body);
@@ -30,6 +33,7 @@ exports.addWebinar = async (req, res) => {
   }
 };
 
+// fungsi edit webinar oleh admin
 exports.editWebinar = async (req, res) => {
   try {
     const webinar = await Webinar.findByIdAndUpdate(req.params.id, req.body, { new: true });
@@ -41,6 +45,7 @@ exports.editWebinar = async (req, res) => {
   }
 };
 
+// fungsi delete webinar oleh admin
 exports.deleteWebinar = async (req, res) => {
   try {
     const webinar = await Webinar.findByIdAndDelete(req.params.id);
