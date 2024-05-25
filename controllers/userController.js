@@ -81,7 +81,7 @@ exports.login = async (req, res) => {
     if (!user) {
       console.log("User not found:", username);
       return res.status(404).send({
-        message: "User does not exist",
+        error: "Email atau Password salah",
       });
     }
 
@@ -96,17 +96,15 @@ exports.login = async (req, res) => {
     // Step 3 - Check if the password matches
     const passwordMatch = await bcrypt.compare(password, user.password);
     if (passwordMatch) {
-      const token = jwt.sign({ id: user._id, username: user.username }, process.env.JWT_KEY);
+      const token = jwt.sign({ id: user._id, username: user.username, role: user.role }, process.env.JWT_KEY, { expiresIn: "1h" });
       console.log("Login successful for user:", username);
       return res.status(200).json({
         message: "Login Successfully",
-        name: user.name,
-        userId: user._id,
         token,
       });
     } else {
       console.log("Incorrect password for user:", username);
-      return res.status(401).json({ error: "Password salah" });
+      return res.status(401).json({ error: "Email atau Password salah" });
     }
   } catch (err) {
     console.error("Internal server error during login:", err);
