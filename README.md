@@ -19,10 +19,11 @@ respon yang diberikan adalah nama, id, dan token
 /webinar/id untuk menadapat webinar sesuai id
 
 /webinar/add untuk menambah webinar (admin dibutuhkan)
-post {
+post{
 "title": "Peningkatan Produktivitas dengan Teknologi AI",
 "description": "Webinar ini akan membahas bagaimana teknologi kecerdasan buatan dapat meningkatkan produktivitas di berbagai bidang industri.",
 "image": "https://example.com/images/webinar1.jpg",
+"categories": ["ff","pubg"],
 "startTime": "2024-06-15T09:00:00Z",
 "endTime": "2024-06-15T11:00:00Z"
 }
@@ -30,10 +31,6 @@ post {
 /webinar/edit/id untuk edit webinar (admin dibutuhkan)
 patch {
 "title": "Peningkatan Produktivitas dengan Teknologi AI",
-"description": "Webinar ini akan membahas bagaimana teknologi kecerdasan buatan dapat meningkatkan produktivitas di berbagai bidang industri.",
-"image": "https://example.com/images/webinar1.jpg",
-"startTime": "2024-06-15T09:00:00Z",
-"endTime": "2024-06-15T11:00:00Z"
 }
 
 /webinar/delete/id untuk delete webinar sesuai id (admin dibutuhkan)

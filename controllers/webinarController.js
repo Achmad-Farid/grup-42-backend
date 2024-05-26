@@ -10,6 +10,29 @@ exports.getAllWebinar = async (req, res) => {
   }
 };
 
+exports.getPageWebinar = async (req, res) => {
+  const { page = 1, limit = 10, category } = req.query;
+
+  const query = category ? { categories: category } : {};
+
+  try {
+    const webinars = await Webinar.find(query)
+      .limit(limit * 1)
+      .skip((page - 1) * limit)
+      .exec();
+
+    const count = await Webinar.countDocuments(query);
+
+    res.status(200).json({
+      webinars,
+      totalPages: Math.ceil(count / limit),
+      currentPage: page,
+    });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
 // fungsi mendapat webinar sesuai id
 exports.getWebinarById = async (req, res) => {
   try {

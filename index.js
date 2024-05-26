@@ -1,5 +1,7 @@
 const express = require("express");
 const cors = require("cors");
+const rateLimit = require("express-rate-limit");
+const helmet = require("helmet");
 
 const app = express();
 
@@ -14,7 +16,22 @@ db.then(() => {
   console.log("gagal konek ke mongoDB");
 });
 
+// const corsOptions = {
+//   origin: "http://app.example.com", // Mengizinkan hanya dari domain ini
+//   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+//   credentials: true,
+//   optionsSuccessStatus: 204,
+// };
+
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 menit
+  max: 100, // batasi setiap IP hingga 100 permintaan per windowMs
+  message: "Terlalu banyak permintaan dari IP ini, coba lagi nanti.",
+});
+
 app.use(cors());
+app.use(limiter); // Terapkan rate limiter untuk semua rute
+app.use(helmet());
 app.use(express.json());
 //diambil dari index.js
 app.use(allRoutes);

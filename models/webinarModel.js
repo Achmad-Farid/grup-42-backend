@@ -18,6 +18,7 @@ const webinarSchema = new mongoose.Schema({
   image: { type: String, required: true },
   startTime: { type: Date, required: true },
   endTime: { type: Date, required: true },
+  categories: [{ type: String, required: true }],
   comments: [commentSchema], // Memastikan comments dan ratings adalah array
   ratings: [ratingSchema],
 });
