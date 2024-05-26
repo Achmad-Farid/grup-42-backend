@@ -16,6 +16,8 @@ respon yang diberikan adalah nama, id, dan token
 
 /webinar untuk mendapat semua webinar
 
+/webinar/page untuk pagination tambahkan query (page = ) untuk page dan (category = ) untuk kategory
+
 /webinar/id untuk menadapat webinar sesuai id
 
 /webinar/add untuk menambah webinar (admin dibutuhkan)
