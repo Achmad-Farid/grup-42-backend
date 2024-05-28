@@ -6,6 +6,10 @@ const User = require("../models/userModel.js");
 const bcrypt = require("bcrypt");
 const transporter = nodemailer.createTransport({
   service: "Gmail",
+  port: 465,
+  secure: true,
+  debug: true,
+  secureConnection: false,
   auth: {
     user: process.env.EMAIL_USERNAME,
     pass: process.env.EMAIL_PASSWORD,
