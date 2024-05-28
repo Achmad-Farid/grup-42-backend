@@ -4,18 +4,25 @@ const nodemailer = require("nodemailer");
 const jwt = require("jsonwebtoken");
 const User = require("../models/userModel.js");
 const bcrypt = require("bcrypt");
+
+const { google } = require("googleapis");
+
+const oAuth2Client = new google.auth.OAuth2(
+  process.env.CLIENT_ID,
+  process.env.CLIENT_SECRET,
+  process.env.REDIRECT_URI // Sesuaikan dengan redirect URI Anda jika diperlukan
+);
+oAuth2Client.setCredentials({ refresh_token: process.env.REFRESH_TOKEN });
+
 const transporter = nodemailer.createTransport({
   service: "Gmail",
-  port: 465,
-  secure: true,
-  debug: true,
-  secureConnection: false,
   auth: {
+    type: "OAuth2",
     user: process.env.EMAIL_USERNAME,
-    pass: process.env.EMAIL_PASSWORD,
-  },
-  tls: {
-    rejectUnauthorized: true,
+    clientId: process.env.CLIENT_ID,
+    clientSecret: process.env.CLIENT_SECRET,
+    refreshToken: process.env.REFRESH_TOKEN,
+    accessToken: oAuth2Client.getAccessToken(),
   },
 });
 
