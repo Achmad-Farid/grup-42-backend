@@ -160,3 +160,68 @@ exports.verify = async (req, res) => {
     return res.status(500).send(err);
   }
 };
+
+// Fungsi lupa password
+exports.forgotPassword = async (req, res) => {
+  const { email } = req.body;
+  if (!email) {
+    return res.status(422).send({ message: "Email is required" });
+  }
+
+  try {
+    const user = await User.findOne({ email }).exec();
+    if (!user) {
+      return res.status(404).send({ message: "Email not found" });
+    }
+
+    // Membuat token reset password menggunakan JWT
+    const resetToken = jwt.sign({ ID: user._id }, process.env.USER_VERIFICATION_TOKEN_SECRET, { expiresIn: "1h" });
+
+    const resetUrl = `http://localhost:3000/reset-password/${resetToken}`;
+    transporter.sendMail({
+      to: email,
+      subject: "Password Reset",
+      html: `Click <a href='${resetUrl}'>here</a> to reset your password. The link is valid for 1 hour.`,
+    });
+
+    return res.status(200).send({ message: `Sent a password reset email to ${email}` });
+  } catch (err) {
+    return res.status(500).send(err);
+  }
+};
+
+// Fungsi untuk menghandle reset password
+exports.resetPassword = async (req, res) => {
+  const { token } = req.params;
+  const { newPassword } = req.body;
+  if (!token || !newPassword) {
+    return res.status(422).send({ message: "Token and new password are required" });
+  }
+
+  try {
+    // Verifikasi token
+    let payload;
+    try {
+      payload = jwt.verify(token, process.env.USER_VERIFICATION_TOKEN_SECRET);
+    } catch (err) {
+      return res.status(500).send({ message: "Invalid or expired token" });
+    }
+
+    // Temukan pengguna berdasarkan ID yang ada di payload
+    const user = await User.findOne({ _id: payload.ID }).exec();
+    if (!user) {
+      return res.status(404).send({ message: "User does not exist" });
+    }
+
+    // Hashing password baru
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    // Update password pengguna
+    user.password = hashedPassword;
+    await user.save();
+
+    return res.status(200).send({ message: "Password has been reset successfully" });
+  } catch (err) {
+    return res.status(500).send(err);
+  }
+};

@@ -14,6 +14,18 @@ post{
 }
 respon yang diberikan adalah nama, id, dan token
 
+/forgot-password untuk lupa password
+post {
+"email": "id12@gmail.com"
+}
+email akan dikirimkan dan token akan ada di param
+
+/reset-pasword/token(forgotpassword)
+{
+"newPassword": "solo"
+}
+pasang token pada param untuk memasang password baru
+
 /webinar untuk mendapat semua webinar
 
 /webinar/page untuk pagination tambahkan query (page = ) untuk page dan (category = ) untuk kategory
