@@ -33,6 +33,40 @@ exports.getPageWebinar = async (req, res) => {
   }
 };
 
+exports.searchWebinar = async (req, res) => {
+  try {
+    const { title, description, category, startDate, endDate } = req.query;
+
+    const query = {};
+
+    if (title) {
+      query.title = { $regex: title, $options: "i" }; // Case-insensitive regex search
+    }
+
+    if (description) {
+      query.description = { $regex: description, $options: "i" }; // Case-insensitive regex search
+    }
+
+    if (category) {
+      query.categories = { $regex: category, $options: "i" }; // Case-insensitive regex search
+    }
+
+    if (startDate && endDate) {
+      query.startTime = { $gte: new Date(startDate), $lte: new Date(endDate) };
+    } else if (startDate) {
+      query.startTime = { $gte: new Date(startDate) };
+    } else if (endDate) {
+      query.startTime = { $lte: new Date(endDate) };
+    }
+
+    const webinars = await Webinar.find(query);
+    res.json(webinars);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
 // fungsi mendapat webinar sesuai id
 exports.getWebinarById = async (req, res) => {
   try {

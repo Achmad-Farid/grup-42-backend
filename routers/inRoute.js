@@ -18,6 +18,7 @@ router.post("/reset-pasword/:token", UserController.resetPassword);
 // router webinar
 router.get("/webinar", WebinarController.getAllWebinar);
 router.get("/webinar/page", WebinarController.getPageWebinar);
+router.get("/webinar/search", WebinarController.searchWebinar);
 router.get("/webinar/:id", WebinarController.getWebinarById);
 // manipulasi webinar (admin)
 router.post("/webinar/add", authenticateJWT, authorizeRole(["admin"]), validate.validateWebinar, validateRequest, WebinarController.addWebinar);

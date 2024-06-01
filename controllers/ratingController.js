@@ -1,6 +1,7 @@
 const Webinar = require("../models/webinarModel");
+const axios = require("axios");
 
-// fungsi komentar user
+// Fungsi komentar user
 exports.userComment = async (req, res) => {
   const { comment } = req.body;
   const userId = req.user.id;
@@ -11,6 +12,12 @@ exports.userComment = async (req, res) => {
   }
 
   try {
+    // Kirim komentar ke FastAPI untuk analisis sentimen
+    const sentimentResponse = await axios.post("http://127.0.0.1:8000/analyze-sentiment/", { comment });
+
+    const sentiment = sentimentResponse.data.sentiment;
+
+    // Temukan webinar berdasarkan ID
     const webinar = await Webinar.findById(req.params.id);
 
     if (!webinar) {
@@ -21,7 +28,8 @@ exports.userComment = async (req, res) => {
       webinar.comments = [];
     }
 
-    webinar.comments.push({ user: userId, name, comment }); // Sertakan nama pengguna saat menambahkan komentar
+    // Sertakan nama pengguna dan hasil analisis sentimen saat menambahkan komentar
+    webinar.comments.push({ user: userId, name, comment, sentiment });
 
     await webinar.save();
 

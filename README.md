@@ -30,6 +30,8 @@ pasang token pada param untuk memasang password baru
 
 /webinar/page untuk pagination tambahkan query (page = ) untuk page dan (category = ) untuk kategory
 
+localhost:3000/webinar/search?title=ai unruk mencari webinar sesuai query contoh description dan title
+
 /webinar/id untuk menadapat webinar sesuai id
 
 /webinar/add untuk menambah webinar (admin dibutuhkan)
@@ -48,6 +50,9 @@ patch {
 }
 
 /webinar/delete/id untuk delete webinar sesuai id (admin dibutuhkan)
+
+jalankan uvicorn main:app --reload
+agar ai sentimen analisis dapat berjalan
 
 /id(webinar)/comments untuk user comment
 {

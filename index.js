@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const rateLimit = require("express-rate-limit");
 const helmet = require("helmet");
+const deleteExpireWebinar = require("./middleware/deleteExpire");
 
 const app = express();
 
@@ -35,6 +36,9 @@ app.use(helmet());
 app.use(express.json());
 //diambil dari index.js
 app.use(allRoutes);
+
+// hapus webinar yang tanggalnya sudah lewat
+deleteExpireWebinar();
 
 app.listen(PORT, () => {
   console.log("server running on port " + PORT);
