@@ -37,6 +37,7 @@ localhost:3000/webinar/search?title=ai unruk mencari webinar sesuai query contoh
 /webinar/add untuk menambah webinar (admin dibutuhkan)
 post{
 "title": "Peningkatan Produktivitas dengan Teknologi AI",
+"link": "www.hhtbfisn.",
 "description": "Webinar ini akan membahas bagaimana teknologi kecerdasan buatan dapat meningkatkan produktivitas di berbagai bidang industri.",
 "image": "https://example.com/images/webinar1.jpg",
 "categories": ["ff","pubg"],

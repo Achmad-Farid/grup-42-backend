@@ -12,8 +12,8 @@ const authorizeRole = require("../middleware/authorizeRole.js");
 router.post("/signup", validate.validateSignup, validateRequest, UserController.signup);
 router.post("/login", validate.validateLogin, validateRequest, UserController.login);
 router.get("/verify/:token", UserController.verify);
-router.post("/forgot-password", UserController.forgotPassword);
-router.post("/reset-pasword/:token", UserController.resetPassword);
+router.post("/forgot-password", validate.validateForgot, validateRequest, UserController.forgotPassword);
+router.post("/reset-pasword/:token", validate.validateReset, validateRequest, UserController.resetPassword);
 
 // router webinar
 router.get("/webinar", WebinarController.getAllWebinar);

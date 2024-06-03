@@ -1,44 +1,34 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, Request
 from pydantic import BaseModel
-from typing import List
-import pickle
+import numpy as np
+import tensorflow as tf
 from tensorflow.keras.models import load_model
 from tensorflow.keras.preprocessing.sequence import pad_sequences
+import pickle
 
-# Initialize the FastAPI application
-app = FastAPI()
-
-# Load the LSTM model and tokenizer
-model = load_model("./ai/lstm-model.h5")
-with open("./ai/tokenizer.pickle", "rb") as handle:
+# Load the model and tokenizer
+model = load_model('./ai/sentiment_model.h5')
+with open('./ai/tokenizer.pkl', 'rb') as handle:
     tokenizer = pickle.load(handle)
 
-# Maximum length of the text to be analyzed
-MAX_SEQUENCE_LENGTH = 100
+# Define FastAPI app
+app = FastAPI()
 
-class SentimentRequest(BaseModel):
-    comment: str
+# Define a request model
+class CommentRequest(BaseModel):
+    content: str
 
-class SentimentResponse(BaseModel):
-    sentiment: str
-
-# Function to predict sentiment
-def predict_sentiment(text):
-    # Tokenize the text
-    sequences = tokenizer.texts_to_sequences([text])
-    # Pad sequences to the same length as MAX_SEQUENCE_LENGTH
-    sequences = pad_sequences(sequences, maxlen=MAX_SEQUENCE_LENGTH)
-    # Predict sentiment
-    prediction = model.predict(sequences)[0][0]
-    # Determine sentiment based on the prediction value
-    sentiment = "positive" if prediction >= 0.5 else "negative"
-    return sentiment
-
-# Define endpoint for sentiment analysis
-@app.post("/analyze-sentiment/", response_model=SentimentResponse)
-async def analyze_sentiment(request: SentimentRequest):
-    comment = request.comment
-    if not comment:
-        raise HTTPException(status_code=400, detail="Empty comment provided")
-    sentiment = predict_sentiment(comment)
-    return {"sentiment": sentiment}
+@app.post("/predict")
+async def predict_sentiment(request: CommentRequest):
+    # Preprocess the input
+    sequences = tokenizer.texts_to_sequences([request.content])
+    padded_sequences = pad_sequences(sequences, maxlen=200)
+    
+    # Make prediction
+    prediction = model.predict(padded_sequences)
+    sentiment = np.argmax(prediction, axis=1)[0]
+    
+    # Map prediction to sentiment label
+    sentiment_label = 'Positive' if sentiment == 1 else 'Negative'
+    
+    return {"sentiment": sentiment_label}

@@ -13,7 +13,7 @@ exports.userComment = async (req, res) => {
 
   try {
     // Kirim komentar ke FastAPI untuk analisis sentimen
-    const sentimentResponse = await axios.post("http://127.0.0.1:8000/analyze-sentiment/", { comment });
+    const sentimentResponse = await axios.post("http://127.0.0.1:8000/predict", { content: comment });
 
     const sentiment = sentimentResponse.data.sentiment;
 
