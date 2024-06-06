@@ -1,4 +1,6 @@
 const Webinar = require("../models/webinarModel");
+const multer = require("multer");
+const path = require("path");
 
 // fungsi mendapat semua webinar
 exports.getAllWebinar = async (req, res) => {
@@ -81,21 +83,42 @@ exports.getWebinarById = async (req, res) => {
 // fungsi menambah webinar oleh admin
 exports.addWebinar = async (req, res) => {
   try {
-    const webinar = new Webinar(req.body);
+    const { title, description, link, startTime, endTime, categories } = req.body;
+    const baseImageUrl = "http://127.0.0.1:3000/";
+    const image = `${baseImageUrl}${req.file.path}`;
+
+    const webinar = new Webinar({
+      title,
+      description,
+      link,
+      image,
+      startTime,
+      endTime,
+      categories,
+    });
+
     await webinar.validate(); // Validasi data
-    await webinar.save();
-    res.status(201).json(webinar);
+    const savedWebinar = await webinar.save();
+
+    res.status(201).json(savedWebinar);
   } catch (err) {
     res.status(400).json({ message: err.message });
   }
 };
 
-// fungsi edit webinar oleh admin
 exports.editWebinar = async (req, res) => {
+  const baseImageUrl = "http://127.0.0.1:3000/";
   try {
-    const webinar = await Webinar.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    const updates = { ...req.body };
+
+    // If an image file is uploaded, add it to the updates and prepend the base URL
+    if (req.file) {
+      updates.image = baseImageUrl + req.file.path.replace("uploads/", "");
+    }
+
+    const webinar = await Webinar.findByIdAndUpdate(req.params.id, updates, { new: true, runValidators: true });
     if (!webinar) return res.status(404).json({ message: "Webinar not found" });
-    await webinar.validate(); // Validasi data
+
     res.json(webinar);
   } catch (err) {
     res.status(400).json({ message: err.message });

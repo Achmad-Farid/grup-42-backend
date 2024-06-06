@@ -1,13 +1,20 @@
 const { body, param } = require("express-validator");
 
 const validateWebinar = [
-  body("title").not().isEmpty().trim().escape(),
-  body("description").not().isEmpty().trim().escape(),
-  body("link").not().isEmpty().trim().escape(),
-  body("image").not().isEmpty().trim().escape(),
-  body("startTime").not().isEmpty().isISO8601().toDate(),
-  body("endTime").not().isEmpty().isISO8601().toDate(),
-  body("categories").not().isEmpty().trim().escape(),
+  body("*.title").notEmpty().withMessage("Judul tidak boleh kosong"),
+  body("*.description").notEmpty().withMessage("Deskripsi tidak boleh kosong"),
+  body("*.link").isURL().withMessage("Link harus berupa URL"),
+  body("*.startTime").isISO8601().withMessage("Format waktu tidak valid"),
+  body("*.endTime")
+    .isISO8601()
+    .withMessage("Format waktu tidak valid")
+    .custom((value, { req }) => {
+      if (new Date(value) <= new Date(req.body.startTime)) {
+        throw new Error("Waktu selesai harus setelah waktu mulai");
+      }
+      return true;
+    }),
+  body("*.categories").isArray().withMessage("Kategori harus berupa array").notEmpty().withMessage("Setidaknya satu kategori harus dipilih"),
 ];
 
 const validateWebinarUpdate = [

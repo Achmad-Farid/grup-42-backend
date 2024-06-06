@@ -43,10 +43,6 @@ exports.userComment = async (req, res) => {
 exports.userRating = async (req, res) => {
   const { rating } = req.body;
 
-  if (typeof rating !== "number" || rating < 1 || rating > 5) {
-    return res.status(400).json({ message: "Rating must be a number between 1 and 5" });
-  }
-
   try {
     const webinar = await Webinar.findById(req.params.id);
 

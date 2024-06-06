@@ -17,6 +17,9 @@ db.then(() => {
   console.log("gagal konek ke mongoDB");
 });
 
+// Menyajikan folder 'uploads' secara statis
+app.use("/uploads", express.static("uploads"));
+
 // const corsOptions = {
 //   origin: "http://app.example.com", // Mengizinkan hanya dari domain ini
 //   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",

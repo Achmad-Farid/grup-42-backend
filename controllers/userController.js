@@ -63,11 +63,26 @@ exports.signup = async (req, res) => {
     // Step 2 - Generate a verification token with the user's ID
     const verificationToken = user.generateVerificationToken();
     // Step 3 - Email the user a unique verification link
-    const url = `http://localhost:3000/verify/${verificationToken}`;
+    const url = `https://digi-umkm.my.id/verify/${verificationToken}`;
     transporter.sendMail({
       to: email,
-      subject: "Verify Account",
-      html: `Click <a href = '${url}'>here</a> to confirm your email.`,
+      subject: "Verify Your Account",
+      html: `
+        <div style="font-family: Arial, sans-serif; line-height: 1.6;">
+          <h2 style="color: #333;">Verify Your Account</h2>
+          <p>Dear ${name},</p>
+          <p>Thank you for registering an account with us. To complete your registration, please verify your email address by clicking the link below:</p>
+          <p style="text-align: center;">
+            <a href="${url}" style="display: inline-block; padding: 10px 20px; font-size: 16px; color: #fff; background-color: #28a745; text-decoration: none; border-radius: 5px;">Verify Email</a>
+          </p>
+          <p>If the button above doesn't work, please copy and paste the following link into your web browser:</p>
+          <p style="word-break: break-all;"><a href="${url}">${url}</a></p>
+          <p>If you did not create an account, please ignore this email.</p>
+          <p>Best regards,<br>Your Company Name</p>
+          <hr style="border: 0; border-top: 1px solid #ccc;">
+          <p style="font-size: 12px; color: #666;">If you have any questions, feel free to <a href="mailto:support@yourcompany.com">contact us</a>.</p>
+        </div>
+      `,
     });
     return res.status(201).send({
       message: `Sent a verification email to ${email}`,
@@ -177,13 +192,28 @@ exports.forgotPassword = async (req, res) => {
     // Membuat token reset password menggunakan JWT
     const resetToken = jwt.sign({ ID: user._id }, process.env.USER_VERIFICATION_TOKEN_SECRET, { expiresIn: "1h" });
 
-    const resetUrl = `http://localhost:3000/reset-password/${resetToken}`;
+    const resetUrl = `https://digi-umkm.my.id/reset-password/${resetToken}`;
     transporter.sendMail({
       to: email,
-      subject: "Password Reset",
-      html: `Click <a href='${resetUrl}'>here</a> to reset your password. The link is valid for 1 hour.`,
+      subject: "Password Reset Request",
+      html: `
+        <div style="font-family: Arial, sans-serif; line-height: 1.6;">
+          <h2 style="color: #333;">Password Reset Request</h2>
+          <p>Dear ${user.name},</p>
+          <p>this your username ${user.username},</p>
+          <p>We received a request to reset the password for your account. You can reset your password by clicking the link below:</p>
+          <p style="text-align: center;">
+            <a href="${resetUrl}" style="display: inline-block; padding: 10px 20px; font-size: 16px; color: #fff; background-color: #dc3545; text-decoration: none; border-radius: 5px;">Reset Password</a>
+          </p>
+          <p>This link is valid for 1 hour. If you did not request a password reset, please ignore this email or contact our support if you have any concerns.</p>
+          <p>If the button above doesn't work, please copy and paste the following link into your web browser:</p>
+          <p style="word-break: break-all;"><a href="${resetUrl}">${resetUrl}</a></p>
+          <p>Best regards,<br>Your Company Name</p>
+          <hr style="border: 0; border-top: 1px solid #ccc;">
+          <p style="font-size: 12px; color: #666;">If you have any questions, feel free to <a href="mailto:support@yourcompany.com">contact us</a>.</p>
+        </div>
+      `,
     });
-
     return res.status(200).send({ message: `Sent a password reset email to ${email}` });
   } catch (err) {
     return res.status(500).send(err);
